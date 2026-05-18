@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentoria Professora Raquel Vieira</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg2: #f5f5f3;
+      --bg3: #eeede9;
+      --text: #1a1a18;
+      --text2: #6b6b68;
+      --text3: #9b9b98;
+      --border: rgba(0,0,0,0.12);
+      --border2: rgba(0,0,0,0.22);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --purple: #534AB7;
+      --purple-dark: #3C3489;
+      --purple-light: #EEEDFE;
+      --purple-mid: #AFA9EC;
+      --green: #3B6D11;
+      --green-light: #EAF3DE;
+      --green-border: #C0DD97;
+      --red: #A32D2D;
+      --red-light: #FCEBEB;
+      --red-border: #F7C1C1;
+      --teal: #1D9E75;
+      --amber: #BA7517;
+      --pink: #D4537E;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1e1e1c;
+        --bg2: #282825;
+        --bg3: #323230;
+        --text: #f0efea;
+        --text2: #a0a09a;
+        --text3: #6e6e68;
+        --border: rgba(255,255,255,0.10);
+        --border2: rgba(255,255,255,0.20);
+        --purple: #7F77DD;
+        --purple-dark: #AFA9EC;
+        --purple-light: #26215C;
+        --purple-mid: #534AB7;
+        --green: #97C459;
+        --green-light: #173404;
+        --green-border: #3B6D11;
+        --red: #F09595;
+        --red-light: #501313;
+        --red-border: #A32D2D;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg3);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px 12px 40px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      background: var(--bg);
+      border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      background: #534AB7;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: #3C3489;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 500; color: #EEEDFE;
+      flex-shrink: 0;
+    }
+    .header-info { flex: 1; }
+    .header-info h1 { color: #EEEDFE; font-size: 15px; font-weight: 500; }
+    .header-info p { color: #AFA9EC; font-size: 12px; margin-top: 1px; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; position: relative; }
+    .saved-toast {
+      font-size: 11px; color: #97C459; background: rgba(255,255,255,0.15);
+      padding: 3px 8px; border-radius: var(--radius-md);
+      opacity: 0; transition: opacity .3s; pointer-events: none;
+    }
+    .saved-toast.show { opacity: 1; }
+    .logout-btn {
+      background: none; border: 0.5px solid #7F77DD; color: #EEEDFE;
+      padding: 4px 10px; border-radius: var(--radius-md); cursor: pointer; font-size: 12px;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.1); }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--bg);
+    }
+    .nb {
+      flex: 1; padding: 9px 4px;
+      font-size: 11px; color: var(--text2);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      border-bottom: 2px solid transparent;
+    }
+    .nb i { font-size: 19px; }
+    .nb.active { color: #534AB7; border-bottom-color: #534AB7; }
+    .nb:hover:not(.active) { background: var(--bg2); }
+
+    /* Content */
+    .content { padding: 14px; min-height: 380px; }
+    .sec { display: none; }
+    .sec.active { display: block; }
+
+    /* Login */
+    .login-wrap { padding: 32px 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .login-logo {
+      width: 58px; height: 58px; border-radius: 50%; background: #3C3489;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 500; color: #EEEDFE;
+    }
+    .login-title { font-size: 18px; font-weight: 500; color: var(--text); text-align: center; }
+    .login-sub { font-size: 13px; color: var(--text2); text-align: center; margin-top: -6px; }
+    .login-form { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 10px; }
+    .login-form input {
+      width: 100%; padding: 11px 14px;
+      border-radius: var(--radius-md); border: 0.5px solid var(--border2);
+      background: var(--bg); font-size: 14px; color: var(--text);
+      font-family: inherit; outline: none;
+    }
+    .login-form input:focus { border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,0.12); }
+    .login-btn {
+      width: 100%; padding: 11px;
+      border-radius: var(--radius-md); background: #534AB7;
+      color: #EEEDFE; border: none; cursor: pointer; font-size: 14px; font-weight: 500;
+    }
+    .login-btn:hover { background: #3C3489; }
+    .login-err { font-size: 12px; color: var(--red); text-align: center; min-height: 16px; }
+    .login-hint { font-size: 11px; color: var(--text3); text-align: center; }
+
+    /* Dashboard */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 14px; }
+    .sc { background: var(--bg2); border-radius: var(--radius-md); padding: 11px; text-align: center; }
+    .sn { font-size: 22px; font-weight: 500; color: #534AB7; }
+    .sl { font-size: 11px; color: var(--text2); margin-top: 2px; }
+    .section-label { font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 9px; }
+    .pi { margin-bottom: 11px; }
+    .pl { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; color: var(--text); }
+    .pb { height: 6px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
+    .pf { height: 100%; border-radius: 4px; transition: width .4s; }
+
+    /* Flashcards */
+    .card-area { perspective: 800px; margin-bottom: 14px; cursor: pointer; }
+    .ci { width: 100%; min-height: 155px; position: relative; transform-style: preserve-3d; transition: transform 0.4s; }
+    .ci.flipped { transform: rotateY(180deg); }
+    .cf {
+      position: absolute; width: 100%; min-height: 155px;
+      backface-visibility: hidden; border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 22px; text-align: center;
+      background: var(--bg);
+    }
+    .cb { transform: rotateY(180deg); background: var(--purple-light); }
+    .ctag { font-size: 11px; color: #534AB7; font-weight: 500; margin-bottom: 7px; text-transform: uppercase; letter-spacing: .5px; }
+    .ctext { font-size: 15px; color: var(--text); line-height: 1.5; }
+    .chint { font-size: 12px; color: var(--text2); margin-top: 10px; }
+    .cc { text-align: center; font-size: 12px; color: var(--text2); margin-bottom: 11px; }
+    .cactions { display: flex; gap: 8px; margin-top: 8px; }
+    .cactions button {
+      flex: 1; padding: 9px; border-radius: var(--radius-md);
+      border: 0.5px solid var(--border2); background: none; font-size: 13px; cursor: pointer; color: var(--text);
+    }
+    .bw { color: var(--red) !important; border-color: var(--red-border) !important; }
+    .br { color: var(--green) !important; border-color: var(--green-border) !important; }
+    .fc-scores { display: flex; gap: 8px; margin-top: 10px; }
+    .fc-score { flex: 1; background: var(--bg2); border-radius: var(--radius-md); padding: 8px; text-align: center; }
+    .fc-score-num { font-size: 18px; font-weight: 500; }
+    .fc-score-label { font-size: 11px; color: var(--text2); }
+
+    /* Simulado */
+    .sim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 11px; }
+    .sim-header span { font-size: 13px; color: var(--text2); }
+    .sim-header strong { color: var(--text); }
+    .qbox { background: var(--bg2); border-radius: var(--radius-md); padding: 13px; margin-bottom: 13px; }
+    .qn { font-size: 11px; color: var(--text2); margin-bottom: 5px; }
+    .qt { font-size: 14px; color: var(--text); line-height: 1.5; margin-bottom: 11px; }
+    .opt {
+      display: flex; align-items: flex-start; gap: 9px; padding: 8px 10px;
+      border-radius: var(--radius-md); border: 0.5px solid var(--border);
+      margin-bottom: 6px; cursor: pointer; font-size: 13px; color: var(--text);
+      background: var(--bg); transition: background .1s;
+    }
+    .opt:hover { background: var(--bg2); }
+    .opt.correct { border-color: var(--green-border); background: var(--green-light); color: var(--green); }
+    .opt.wrong { border-color: var(--red-border); background: var(--red-light); color: var(--red); }
+    .ol { font-weight: 500; min-width: 17px; }
+    .sa { display: flex; gap: 8px; }
+    .sa button {
+      flex: 1; padding: 9px; border-radius: var(--radius-md);
+      border: 0.5px solid var(--border2); background: none; cursor: pointer; font-size: 13px; color: var(--text);
+    }
+    .sa button:hover { background: var(--bg2); }
+    .bp { background: #534AB7 !important; color: #EEEDFE !important; border-color: #534AB7 !important; }
+    .bp:hover { background: #3C3489 !important; }
+
+    /* Cronograma */
+    .day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 14px; }
+    .dc {
+      aspect-ratio: 1; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 500;
+      border: 0.5px solid var(--border); color: var(--text2);
+    }
+    .dc.done { background: var(--purple-light); color: #534AB7; border-color: var(--purple-mid); }
+    .dc.today { background: #534AB7; color: #EEEDFE; border-color: #534AB7; }
+    .tl { display: flex; flex-direction: column; gap: 7px; }
+    .ti {
+      display: flex; align-items: center; gap: 11px; padding: 10px 12px;
+      border-radius: var(--radius-md); border: 0.5px solid var(--border); background: var(--bg);
+    }
+    .tck {
+      width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border2);
+      cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .tck.checked { background: #534AB7; border-color: #534AB7; }
+    .tck.checked::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; }
+    .tinf { flex: 1; }
+    .tn { font-size: 13px; color: var(--text); }
+    .tm { font-size: 11px; color: var(--text2); }
+    .tdone .tn { text-decoration: line-through; color: var(--text2); }
+
+    /* Notas */
+    .nl { display: flex; flex-direction: column; gap: 7px; margin-bottom: 11px; }
+    .nc { padding: 11px; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: var(--bg); }
+    .ns { font-size: 11px; font-weight: 500; color: #534AB7; margin-bottom: 3px; }
+    .ntit { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .nprev { font-size: 12px; color: var(--text2); line-height: 1.4; }
+    .nn { display: flex; gap: 7px; margin-top: 7px; }
+    .nn input {
+      flex: 1; padding: 9px 12px; border-radius: var(--radius-md);
+      border: 0.5px solid var(--border2); background: var(--bg);
+      font-size: 13px; color: var(--text); font-family: inherit; outline: none;
+    }
+    .nn input:focus { border-color: #534AB7; }
+    .ab {
+      padding: 9px 14px; border-radius: var(--radius-md);
+      background: #534AB7; color: #EEEDFE; border: none; cursor: pointer; font-size: 13px;
+    }
+    .ab:hover { background: #3C3489; }
+
+    /* AI button */
+    .ai-btn {
+      margin-top: 12px; width: 100%; padding: 9px;
+      border-radius: var(--radius-md); border: 0.5px solid var(--border2);
+      background: none; cursor: pointer; font-size: 13px; color: #534AB7;
+      font-family: inherit;
+    }
+    .ai-btn:hover { background: var(--purple-light); }
+
+    @media (max-width: 400px) {
+      body { padding: 0; }
+      .app { border-radius: 0; border: none; }
+      .nb { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- LOGIN -->
+  <div id="login-view">
+    <div class="header">
+      <div class="avatar">RV</div>
+      <div class="header-info">
+        <h1>Mentoria Professora Raquel Vieira</h1>
+        <p>Concurso Público · 2026</p>
+      </div>
+    </div>
+    <div class="login-wrap">
+      <div class="login-logo">RV</div>
+      <div class="login-title">Bem-vindo(a)!</div>
+      <div class="login-sub">Entre com seu e-mail para acessar seus estudos</div>
+      <div class="login-form">
+        <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email" />
+        <input type="password" id="login-pass" placeholder="Senha" autocomplete="current-password" />
+        <button class="login-btn" onclick="doLogin()">Entrar</button>
+        <div class="login-err" id="login-err"></div>
+        <div class="login-hint">Conta de demonstração: aluno@teste.com / 1234</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP PRINCIPAL -->
+  <div id="main-view" style="display:none">
+    <div class="header">
+      <div class="avatar">RV</div>
+      <div class="header-info">
+        <h1>Mentoria Professora Raquel Vieira</h1>
+        <p id="user-label">Carregando...</p>
+      </div>
+      <div class="header-right">
+        <span class="saved-toast" id="saved-toast"><i class="ti ti-check" style="font-size:11px"></i> Salvo</span>
+        <button class="logout-btn" onclick="doLogout()" title="Sair"><i class="ti ti-logout"></i></button>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="nb active" onclick="showSec('dashboard',this)"><i class="ti ti-layout-dashboard"></i>Início</button>
+      <button class="nb" onclick="showSec('flashcards',this)"><i class="ti ti-cards"></i>Flashcards</button>
+      <button class="nb" onclick="showSec('simulado',this)"><i class="ti ti-clipboard-check"></i>Simulado</button>
+      <button class="nb" onclick="showSec('cronograma',this)"><i class="ti ti-calendar"></i>Agenda</button>
+      <button class="nb" onclick="showSec('notas',this)"><i class="ti ti-notes"></i>Notas</button>
+    </div>
+
+    <div class="content">
+
+      <!-- Dashboard -->
+      <div class="sec active" id="dashboard">
+        <div class="stats-grid">
+          <div class="sc"><div class="sn" id="stat-streak">0</div><div class="sl">dias seguidos</div></div>
+          <div class="sc"><div class="sn" id="stat-pct">0%</div><div class="sl">aproveitamento</div></div>
+          <div class="sc"><div class="sn" id="stat-q">0</div><div class="sl">questões feitas</div></div>
+        </div>
+        <p class="section-label">Progresso por matéria</p>
+        <div class="pi"><div class="pl"><span>Serviço Social</span><span id="prog-ss">0%</span></div><div class="pb"><div class="pf" id="bar-ss" style="background:#534AB7;width:0%"></div></div></div>
+        <div class="pi"><div class="pl"><span>Legislação Social</span><span id="prog-ls">0%</span></div><div class="pb"><div class="pf" id="bar-ls" style="background:#1D9E75;width:0%"></div></div></div>
+        <div class="pi"><div class="pl"><span>Políticas Públicas</span><span id="prog-pp">0%</span></div><div class="pb"><div class="pf" id="bar-pp" style="background:#BA7517;width:0%"></div></div></div>
+        <div class="pi"><div class="pl"><span>Português</span><span id="prog-pt">0%</span></div><div class="pb"><div class="pf" id="bar-pt" style="background:#D4537E;width:0%"></div></div></div>
+        <div class="pi"><div class="pl"><span>Raciocínio Lógico</span><span id="prog-rl">0%</span></div><div class="pb"><div class="pf" id="bar-rl" style="background:#2C7BBF;width:0%"></div></div></div>
+        <div class="pi"><div class="pl"><span>Informática</span><span id="prog-inf">0%</span></div><div class="pb"><div class="pf" id="bar-inf" style="background:#8B5CF6;width:0%"></div></div></div>
+      </div>
+
+      <!-- Flashcards -->
+      <div class="sec" id="flashcards">
+        <div class="cc" id="card-counter">Carta 1 de 4 · Toque para virar</div>
+        <div class="card-area" onclick="flipCard()">
+          <div class="ci" id="card-inner">
+            <div class="cf">
+              <div class="ctag" id="card-tag">Direito Constitucional</div>
+              <div class="ctext" id="card-front-text">Carregando...</div>
+              <div class="chint">Toque para ver a resposta</div>
+            </div>
+            <div class="cf cb">
+              <div class="ctag" style="color:var(--green)">Resposta</div>
+              <div class="ctext" id="card-back-text"></div>
+            </div>
+          </div>
+        </div>
+        <div class="cactions" id="card-actions" style="display:none">
+          <button class="bw" onclick="nextCard(false)"><i class="ti ti-x"></i> Errei</button>
+          <button class="br" onclick="nextCard(true)"><i class="ti ti-check"></i> Acertei</button>
+        </div>
+        <div class="fc-scores">
+          <div class="fc-score"><div class="fc-score-num" id="fc-acertos" style="color:var(--green)">0</div><div class="fc-score-label">acertos</div></div>
+          <div class="fc-score"><div class="fc-score-num" id="fc-erros" style="color:var(--red)">0</div><div class="fc-score-label">erros</div></div>
+        </div>
+      </div>
+
+      <!-- Simulado -->
+      <div class="sec" id="simulado">
+        <div class="sim-header">
+          <span>Total respondidas: <strong id="sim-total">0</strong></span>
+          <span>Acertos: <strong id="sim-acertos" style="color:var(--green)">0</strong></span>
+        </div>
+        <div class="qbox">
+          <div class="qn" id="q-num">Questão 1 · Serviço Social · Estilo FCC</div>
+          <div class="qt" id="q-text"></div>
+          <div id="opcoes-container"></div>
+        </div>
+        <div id="gabarito-box" style="display:none;background:var(--green-light);border:0.5px solid var(--green-border);border-radius:var(--radius-md);padding:12px;margin-bottom:12px;font-size:13px;color:var(--green);line-height:1.5">
+          <strong>Comentário:</strong> <span id="gabarito-text"></span>
+        </div>
+        <div class="sa">
+          <button onclick="proximaQuestao()" id="btn-proxima" style="display:none" class="bp">Próxima questão →</button>
+        </div>
+      </div>
+
+      <!-- Cronograma -->
+      <div class="sec" id="cronograma">
+        <p class="section-label">Maio 2026</p>
+        <div class="day-grid" id="day-grid"></div>
+        <p class="section-label">Tarefas de hoje</p>
+        <div class="tl" id="task-list"></div>
+      </div>
+
+      <!-- Notas -->
+      <div class="sec" id="notas">
+        <div class="nl" id="note-list"></div>
+        <div class="nn">
+          <input type="text" id="note-input" placeholder="Nova anotação rápida..." />
+          <button class="ab" onclick="addNote()"><i class="ti ti-plus"></i></button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURAÇÃO DE USUÁRIOS
+// Para adicionar alunos reais, inclua aqui:
+// 'email@aluno.com': { pass: 'senha123', name: 'Nome do Aluno' }
+// ============================================================
+const USERS = {
+  'aluno@teste.com': { pass: '1234', name: 'Aluno Demo' },
+  'raquel@mentoria.com': { pass: 'admin2026', name: 'Raquel Vieira (Admin)' }
+};
+
+const CARDS = [
+  // PORTUGUÊS
+  { tag: 'Português', q: 'O que é crase?', a: 'Crase é a fusão da preposição "a" com o artigo definido feminino "a". Indica-se com acento grave (à). Ex: "Fui à escola."' },
+  { tag: 'Português', q: 'Quando NÃO se usa crase?', a: 'Antes de verbos, palavras masculinas sem artigo, pronomes pessoais e demonstrativos como "esta", "essa", "aquela" (sem sentido de "àquela").' },
+  { tag: 'Português', q: 'O que são verbos impessoais? Cite exemplos.', a: 'Verbos sem sujeito, usados sempre na 3ª pessoa do singular. Ex: <strong>Haver</strong> (existir), <strong>Fazer</strong> (tempo), <strong>Chover</strong>. "Há muitas pessoas." / "Faz dois anos."' },
+  { tag: 'Português', q: 'O que é sujeito indeterminado?', a: 'Quando o agente da ação existe, mas não é identificado. Usa-se verbo na 3ª pessoa do plural sem sujeito ou verbo na 3ª pessoa do singular + "se". Ex: "Precisam-se de funcionários."' },
+  { tag: 'Português', q: 'Qual a diferença entre "onde" e "aonde"?', a: '"Onde" indica lugar estático (permanência). "Aonde" indica direção (movimento). Ex: "Onde você mora?" / "Aonde você vai?"' },
+
+  // RACIOCÍNIO LÓGICO
+  { tag: 'Raciocínio Lógico', q: 'Qual a negação de "Todos os alunos passaram"?', a: '<strong>Pelo menos um aluno não passou.</strong> A negação de "todo" é "algum não".' },
+  { tag: 'Raciocínio Lógico', q: 'O que é uma proposição tautológica?', a: 'Uma proposição composta que é <strong>sempre verdadeira</strong>, independentemente dos valores das proposições simples. Ex: p ∨ ¬p.' },
+  { tag: 'Raciocínio Lógico', q: 'Em lógica, o que é modus ponens?', a: 'Regra de inferência: se "Se p então q" é verdade e "p" é verdade, então "q" é verdade. Ex: Se chove, a rua molha. Choveu. Logo, a rua molhou.' },
+  { tag: 'Raciocínio Lógico', q: 'Qual o resultado de: 15% de 200 + 20% de 150?', a: '<strong>60.</strong> 15% de 200 = 30. 20% de 150 = 30. 30 + 30 = 60.' },
+  { tag: 'Raciocínio Lógico', q: 'Se A > B e B > C, qual a relação entre A e C?', a: '<strong>A > C.</strong> Pela transitividade da desigualdade: se A é maior que B e B é maior que C, então A é maior que C.' },
+
+  // INFORMÁTICA
+  { tag: 'Informática', q: 'O que é phishing?', a: 'Técnica de <strong>golpe virtual</strong> que tenta enganar o usuário para obter dados pessoais, senhas e informações bancárias, geralmente por e-mails ou sites falsos.' },
+  { tag: 'Informática', q: 'Qual a diferença entre HD e SSD?', a: '<strong>HD</strong> (disco rígido) usa partes mecânicas e é mais lento. <strong>SSD</strong> (unidade de estado sólido) é mais rápido, silencioso e resistente a impactos.' },
+  { tag: 'Informática', q: 'O que é nuvem (cloud computing)?', a: 'Armazenamento e processamento de dados em <strong>servidores remotos</strong> acessados pela internet, sem depender do computador local. Ex: Google Drive, OneDrive.' },
+  { tag: 'Informática', q: 'O que faz o atalho Ctrl+Z?', a: '<strong>Desfaz</strong> a última ação realizada em um programa. É um dos atalhos mais usados no Windows e em editores de texto.' },
+  { tag: 'Informática', q: 'O que é um firewall?', a: 'Sistema de <strong>segurança</strong> que monitora e controla o tráfego de rede, bloqueando acessos não autorizados e protegendo o computador contra invasões.' },
+
+  // SERVIÇO SOCIAL
+  { tag: 'Serviço Social', q: 'O que é o SUAS?', a: '<strong>Sistema Único de Assistência Social</strong> — sistema público não contributivo que organiza as ações de assistência social no Brasil, estruturado em proteção social básica e especial.' },
+  { tag: 'Serviço Social', q: 'Quais são os níveis de proteção do SUAS?', a: '<strong>Proteção Social Básica</strong> (CRAS) — previne riscos. <strong>Proteção Social Especial de Média Complexidade</strong> (CREAS) e <strong>Alta Complexidade</strong> (abrigos, casas-lar).' },
+  { tag: 'Serviço Social', q: 'O que é o CRAS?', a: '<strong>Centro de Referência de Assistência Social</strong> — porta de entrada do SUAS. Oferta o PAIF e serviços de proteção social básica para famílias em situação de vulnerabilidade.' },
+  { tag: 'Serviço Social', q: 'O que é o PAIF?', a: '<strong>Programa de Atenção Integral à Família</strong> — serviço contínuo de proteção social básica, ofertado exclusivamente no CRAS, que trabalha com famílias em vulnerabilidade social.' },
+  { tag: 'Serviço Social', q: 'O que prevê a LOAS?', a: 'A <strong>Lei Orgânica da Assistência Social</strong> (Lei nº 8.742/1993) regula a assistência social como direito do cidadão e dever do Estado, integrando a Seguridade Social.' },
+
+  // POLÍTICAS PÚBLICAS
+  { tag: 'Políticas Públicas', q: 'O que é o Bolsa Família?', a: 'Programa federal de transferência de renda para famílias em situação de pobreza e extrema pobreza, com condicionalidades em saúde e educação. Reformulado em 2023.' },
+  { tag: 'Políticas Públicas', q: 'O que é o BPC?', a: '<strong>Benefício de Prestação Continuada</strong> — benefício assistencial de 1 salário mínimo mensal para idosos acima de 65 anos e pessoas com deficiência em extrema pobreza.' },
+  { tag: 'Políticas Públicas', q: 'O que é a Seguridade Social no Brasil?', a: 'Conjunto integrado de ações de iniciativa pública e privada para garantir direitos à <strong>Saúde, Previdência Social e Assistência Social</strong> (Art. 194 CF/88).' },
+  { tag: 'Políticas Públicas', q: 'Quais são os eixos estruturantes da Política Nacional de Assistência Social (PNAS)?', a: 'Matricialidade sociofamiliar, descentralização político-administrativa, territorialização, financiamento, controle social, política de recursos humanos e informação.' },
+
+  // LEGISLAÇÃO SOCIAL
+  { tag: 'Legislação Social', q: 'O que garante o ECA?', a: 'O <strong>Estatuto da Criança e do Adolescente</strong> (Lei nº 8.069/1990) garante proteção integral a crianças (até 12 anos) e adolescentes (12 a 18 anos), assegurando direitos fundamentais.' },
+  { tag: 'Legislação Social', q: 'O que é o Estatuto do Idoso?', a: 'Lei nº 10.741/2003 que assegura direitos às pessoas com <strong>60 anos ou mais</strong>, incluindo saúde, transporte gratuito, prioridade em atendimentos e proteção contra violência.' },
+  { tag: 'Legislação Social', q: 'O que é a Lei Maria da Penha?', a: 'Lei nº 11.340/2006 que cria mecanismos para coibir a <strong>violência doméstica e familiar contra a mulher</strong>, prevendo medidas protetivas, prisão preventiva e assistência às vítimas.' },
+  { tag: 'Legislação Social', q: 'O que prevê a Lei de Cotas (Lei nº 12.711/2012)?', a: 'Reserva de vagas em universidades federais e institutos técnicos para estudantes de escolas públicas, com recorte de renda, raça/cor e pessoas com deficiência.' }
+];
+
+// Banco de questões do simulado — estilo FCC
+const QUESTOES = [
+  {
+    disciplina: 'Serviço Social',
+    enunciado: 'O SUAS organiza as ações de assistência social em níveis de proteção. Assinale a alternativa que apresenta corretamente esses níveis:',
+    opcoes: [
+      'Proteção Social Básica e Proteção Social de Alta Complexidade apenas.',
+      'Proteção Social Primária, Secundária e Terciária.',
+      'Proteção Social Básica e Proteção Social Especial (média e alta complexidade).',
+      'Proteção Preventiva e Proteção Corretiva.'
+    ],
+    correta: 2,
+    gabarito: 'O SUAS estrutura-se em Proteção Social Básica (CRAS/PAIF) e Proteção Social Especial, subdividida em Média Complexidade (CREAS) e Alta Complexidade (abrigos, repúblicas). Fonte: PNAS/2004.'
+  },
+  {
+    disciplina: 'Legislação Social',
+    enunciado: 'De acordo com a LOAS (Lei nº 8.742/1993), a assistência social é direito:',
+    opcoes: [
+      'Apenas de quem contribui para a Previdência Social.',
+      'Do cidadão e dever do Estado, independentemente de contribuição.',
+      'Exclusivo de pessoas com deficiência e idosos.',
+      'Restrito às famílias com renda per capita inferior a meio salário mínimo.'
+    ],
+    correta: 1,
+    gabarito: 'Art. 1º da LOAS: "A assistência social, direito do cidadão e dever do Estado, é Política de Seguridade Social não contributiva." Não exige contribuição prévia.'
+  },
+  {
+    disciplina: 'Políticas Públicas',
+    enunciado: 'O BPC — Benefício de Prestação Continuada — é assegurado a pessoas com deficiência e idosos que comprovem não possuir meios de prover a própria manutenção. O valor do benefício corresponde a:',
+    opcoes: [
+      'Meio salário mínimo mensal.',
+      'Um salário mínimo mensal.',
+      'Dois salários mínimos mensais.',
+      'O valor varia conforme a renda familiar.'
+    ],
+    correta: 1,
+    gabarito: 'Conforme art. 20 da LOAS, o BPC garante 1 (um) salário mínimo mensal ao idoso com 65 anos ou mais e à pessoa com deficiência, sem renda familiar suficiente.'
+  },
+  {
+    disciplina: 'Português',
+    enunciado: 'Assinale a alternativa em que a concordância verbal está correta, conforme a norma culta:',
+    opcoes: [
+      'Fazem dois anos que não o vejo.',
+      'Faz dois anos que não o vejo.',
+      'Fazem dois anos que não te vejo.',
+      'Faz dois anos que não te vemos.'
+    ],
+    correta: 1,
+    gabarito: 'O verbo "fazer" indicando tempo decorrido é impessoal — não tem sujeito — e deve ser usado sempre na 3ª pessoa do singular: "Faz dois anos". Fonte: gramáticas FCC.'
+  },
+  {
+    disciplina: 'Raciocínio Lógico',
+    enunciado: 'Se "Todo assistente social é graduado" e "João é assistente social", pode-se concluir que:',
+    opcoes: [
+      'João pode ou não ser graduado.',
+      'João é graduado.',
+      'Nem todo graduado é assistente social.',
+      'João não precisa ser graduado.'
+    ],
+    correta: 1,
+    gabarito: 'Raciocínio dedutivo (modus ponens / silogismo): se todo A é B e João é A, então João é B. Logo, João é graduado. Premissas verdadeiras garantem conclusão verdadeira.'
+  },
+  {
+    disciplina: 'Informática',
+    enunciado: 'No contexto da segurança da informação, phishing é uma técnica que:',
+    opcoes: [
+      'Acelera a conexão com a internet via wi-fi.',
+      'Protege computadores contra vírus e malwares.',
+      'Tenta enganar usuários para obter dados pessoais e senhas por meios fraudulentos.',
+      'Realiza backup automático de arquivos na nuvem.'
+    ],
+    correta: 2,
+    gabarito: 'Phishing é um ataque de engenharia social em que criminosos simulam ser entidades confiáveis (bancos, órgãos públicos) para roubar dados sensíveis do usuário. FCC cobrou este tema em 2022/2023.'
+  },
+  {
+    disciplina: 'Serviço Social',
+    enunciado: 'O CRAS — Centro de Referência de Assistência Social — é a unidade pública responsável por ofertar, obrigatoriamente, o seguinte serviço:',
+    opcoes: [
+      'PAEFI — Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos.',
+      'PAIF — Serviço de Proteção e Atendimento Integral à Família.',
+      'Serviço de Acolhimento Institucional para crianças.',
+      'Serviço de Medidas Socioeducativas em Meio Aberto.'
+    ],
+    correta: 1,
+    gabarito: 'O PAIF é o serviço continuado ofertado exclusivamente no CRAS. Já o PAEFI é ofertado no CREAS. Esta distinção é frequentemente cobrada pela FCC em concursos de Assistente Social.'
+  },
+  {
+    disciplina: 'Legislação Social',
+    enunciado: 'De acordo com o ECA (Lei nº 8.069/1990), é considerado criança a pessoa com idade:',
+    opcoes: [
+      'Até 10 anos de idade.',
+      'Até 12 anos incompletos.',
+      'Até 14 anos de idade.',
+      'Até 16 anos incompletos.'
+    ],
+    correta: 1,
+    gabarito: 'Art. 2º do ECA: "Considera-se criança, para os efeitos desta Lei, a pessoa até doze anos de idade incompletos, e adolescente aquela entre doze e dezoito anos de idade."'
+  },
+  {
+    disciplina: 'Políticas Públicas',
+    enunciado: 'A Seguridade Social brasileira, conforme o Art. 194 da Constituição Federal de 1988, é composta por:',
+    opcoes: [
+      'Saúde, Educação e Assistência Social.',
+      'Previdência Social, Saúde e Assistência Social.',
+      'Saúde, Trabalho e Previdência Social.',
+      'Assistência Social, Habitação e Previdência Social.'
+    ],
+    correta: 1,
+    gabarito: 'Art. 194 CF/88: "A seguridade social compreende um conjunto integrado de ações de iniciativa dos Poderes Públicos e da sociedade, destinadas a assegurar os direitos relativos à saúde, à previdência e à assistência social."'
+  },
+  {
+    disciplina: 'Português',
+    enunciado: 'Assinale a frase em que o uso da crase está correto:',
+    opcoes: [
+      'Entregou o relatório à ele.',
+      'Refiro-me à aquela situação.',
+      'Foi à reunião do conselho municipal.',
+      'Assistiu à um documentário importante.'
+    ],
+    correta: 2,
+    gabarito: '"À reunião" está correto: preposição "a" + artigo "a" antes de substantivo feminino. Erros: "à ele" (pronome não aceita crase), "à aquela" (crase antes de demonstrativo "aquela" não ocorre), "à um" (artigo indefinido não aceita crase).'
+  }
+];
+
+const DEFAULT_STATE = () => ({
+  streak: 0, questoes: 0, acertos_sim: 0,
+  prog: { pt: 0, rl: 0, ss: 0, inf: 0, pp: 0, ls: 0 },
+  fc: { acertos: 0, erros: 0, idx: 0 },
+  sim_idx: 0,
+  tasks: [
+    { id: 1, name: 'Serviço Social — SUAS e CRAS', meta: '45 min · 20 questões', done: false },
+    { id: 2, name: 'Português — Crase e Concordância', meta: '30 min · 15 questões', done: false },
+    { id: 3, name: 'Legislação Social — ECA e LOAS', meta: '40 min · 20 questões', done: false },
+    { id: 4, name: 'Revisão de Flashcards', meta: '20 min · 30 cartas', done: false }
+  ],
+  notes: [
+    { subj: 'Serviço Social', title: 'SUAS — Níveis de Proteção', prev: 'Básica: CRAS/PAIF. Especial Média: CREAS/PAEFI. Especial Alta: abrigos, repúblicas, casas-lar.' },
+    { subj: 'Legislação Social', title: 'LOAS — Art. 1º', prev: 'Assistência social é direito do cidadão e dever do Estado — não contributiva. Lei nº 8.742/1993.' },
+    { subj: 'Políticas Públicas', title: 'Seguridade Social — CF/88', prev: 'Art. 194: Saúde + Previdência Social + Assistência Social. Tripé da seguridade.' },
+    { subj: 'Português', title: 'Verbos Impessoais', prev: 'Haver (existir), Fazer (tempo), Chover — sempre 3ª pessoa do singular. "Há vagas." / "Faz anos."' }
+  ],
+  days_done: [],
+  last_login_date: ''
+});
+
+let currentUser = null, state = null, flipped = false, simAnswered = false;
+
+function storageKey(email) { return 'mentoria_rv_' + email.replace(/[^a-z0-9]/gi, '_'); }
+
+function loadState(email) {
+  try { const s = localStorage.getItem(storageKey(email)); return s ? JSON.parse(s) : null; } catch(e) { return null; }
+}
+function saveState() {
+  if (!currentUser) return;
+  try { localStorage.setItem(storageKey(currentUser), JSON.stringify(state)); showToast(); } catch(e) {}
+}
+function showToast() {
+  const t = document.getElementById('saved-toast');
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-err');
+  if (!email || !pass) { err.textContent = 'Preencha e-mail e senha.'; return; }
+  if (!USERS[email] || USERS[email].pass !== pass) { err.textContent = 'E-mail ou senha incorretos.'; return; }
+  err.textContent = '';
+  currentUser = email;
+  const saved = loadState(email);
+  state = saved || DEFAULT_STATE();
+
+  // Atualiza streak se for novo dia
+  const today = new Date().toISOString().split('T')[0];
+  if (state.last_login_date !== today) {
+    state.streak = (state.last_login_date) ? state.streak + 1 : 1;
+    state.last_login_date = today;
+    const dayNum = new Date().getDate();
+    if (!state.days_done.includes(dayNum)) state.days_done.push(dayNum);
+    saveState();
+  }
+
+  document.getElementById('login-view').style.display = 'none';
+  document.getElementById('main-view').style.display = 'block';
+  document.getElementById('user-label').textContent = USERS[email].name + ' · Concurso Público 2026';
+  renderAll();
+}
+
+function doLogout() {
+  saveState();
+  currentUser = null; state = null;
+  document.getElementById('main-view').style.display = 'none';
+  document.getElementById('login-view').style.display = 'block';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-err').textContent = '';
+}
+
+// Mapa de disciplinas para chave de progresso
+const DISC_MAP = {
+  'Português': 'pt', 'Raciocínio Lógico': 'rl', 'Serviço Social': 'ss',
+  'Informática': 'inf', 'Políticas Públicas': 'pp', 'Legislação Social': 'ls'
+};
+
+function renderAll() {
+  renderDashboard(); renderFlashcard(); renderTasks(); renderNotes(); renderCalendar();
+  renderQuestao();
+  document.getElementById('sim-total').textContent = state.questoes;
+  document.getElementById('sim-acertos').textContent = state.acertos_sim;
+}
+
+function renderDashboard() {
+  const pct = state.questoes > 0 ? Math.round(state.acertos_sim / state.questoes * 100) : 0;
+  document.getElementById('stat-streak').textContent = state.streak;
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stat-q').textContent = state.questoes;
+  ['pt','rl','ss','inf','pp','ls'].forEach(k => {
+    const el = document.getElementById('prog-'+k);
+    const bar = document.getElementById('bar-'+k);
+    if (el && bar) { const v = state.prog[k] || 0; el.textContent = v + '%'; bar.style.width = v + '%'; }
+  });
+}
+
+function renderFlashcard() {
+  const c = CARDS[state.fc.idx % CARDS.length];
+  document.getElementById('card-tag').textContent = c.tag;
+  document.getElementById('card-front-text').textContent = c.q;
+  document.getElementById('card-back-text').innerHTML = c.a;
+  document.getElementById('card-counter').textContent = 'Carta ' + (state.fc.idx % CARDS.length + 1) + ' de ' + CARDS.length + ' · Toque para virar';
+  document.getElementById('fc-acertos').textContent = state.fc.acertos;
+  document.getElementById('fc-erros').textContent = state.fc.erros;
+  document.getElementById('card-actions').style.display = 'none';
+  document.getElementById('card-inner').classList.remove('flipped');
+  flipped = false;
+}
+
+function flipCard() {
+  flipped = !flipped;
+  document.getElementById('card-inner').classList.toggle('flipped', flipped);
+  document.getElementById('card-actions').style.display = flipped ? 'flex' : 'none';
+}
+
+function nextCard(correct) {
+  const c = CARDS[state.fc.idx % CARDS.length];
+  const k = DISC_MAP[c.tag];
+  if (correct) { state.fc.acertos++; if (k) state.prog[k] = Math.min(100, (state.prog[k]||0) + 2); }
+  else state.fc.erros++;
+  state.fc.idx = (state.fc.idx + 1) % CARDS.length;
+  saveState();
+  setTimeout(() => renderFlashcard(), 220);
+}
+
+function renderQuestao() {
+  const idx = (state.sim_idx || 0) % QUESTOES.length;
+  const q = QUESTOES[idx];
+  const letras = ['A','B','C','D'];
+  document.getElementById('q-num').textContent = 'Questão ' + (idx+1) + ' de ' + QUESTOES.length + ' · ' + q.disciplina + ' · Estilo FCC';
+  document.getElementById('q-text').textContent = q.enunciado;
+  document.getElementById('gabarito-box').style.display = 'none';
+  document.getElementById('btn-proxima').style.display = 'none';
+  const cont = document.getElementById('opcoes-container');
+  cont.innerHTML = '';
+  q.opcoes.forEach((op, i) => {
+    const div = document.createElement('div');
+    div.className = 'opt';
+    div.innerHTML = `<span class="ol">${letras[i]}</span> ${op}`;
+    div.onclick = () => responder(div, i === q.correta, q);
+    cont.appendChild(div);
+  });
+}
+
+function responder(el, acertou, q) {
+  if (simAnswered) return;
+  simAnswered = true;
+  const letras = ['A','B','C','D'];
+  const cont = document.getElementById('opcoes-container');
+  cont.querySelectorAll('.opt').forEach((opt, i) => {
+    if (opt === el) opt.classList.add(acertou ? 'correct' : 'wrong');
+    if (i === q.correta) opt.classList.add('correct');
+    opt.style.pointerEvents = 'none';
+  });
+  document.getElementById('gabarito-text').textContent = q.gabarito;
+  document.getElementById('gabarito-box').style.display = 'block';
+  document.getElementById('btn-proxima').style.display = 'block';
+  state.questoes++;
+  const k = DISC_MAP[q.disciplina];
+  if (acertou) { state.acertos_sim++; if (k) state.prog[k] = Math.min(100, (state.prog[k]||0) + 5); }
+  document.getElementById('sim-total').textContent = state.questoes;
+  document.getElementById('sim-acertos').textContent = state.acertos_sim;
+  renderDashboard();
+  saveState();
+}
+
+function proximaQuestao() {
+  simAnswered = false;
+  state.sim_idx = ((state.sim_idx || 0) + 1) % QUESTOES.length;
+  saveState();
+  renderQuestao();
+}
+
+function renderTasks() {
+  const tl = document.getElementById('task-list');
+  tl.innerHTML = '';
+  state.tasks.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'ti';
+    div.innerHTML = `<div class="tck ${t.done?'checked':''}" onclick="toggleTask(${t.id},this)"></div><div class="tinf ${t.done?'tdone':''}"><div class="tn">${t.name}</div><div class="tm">${t.meta}</div></div>`;
+    tl.appendChild(div);
+  });
+}
+
+function toggleTask(id, el) {
+  const t = state.tasks.find(x => x.id === id);
+  if (!t) return;
+  t.done = !t.done;
+  el.classList.toggle('checked', t.done);
+  el.nextElementSibling.classList.toggle('tdone', t.done);
+  saveState();
+}
+
+function renderNotes() {
+  const nl = document.getElementById('note-list');
+  nl.innerHTML = '';
+  state.notes.forEach(n => {
+    const d = document.createElement('div');
+    d.className = 'nc';
+    d.innerHTML = `<div class="ns">${n.subj}</div><div class="ntit">${n.title}</div>${n.prev ? '<div class="nprev">'+n.prev+'</div>' : ''}`;
+    nl.appendChild(d);
+  });
+}
+
+function addNote() {
+  const inp = document.getElementById('note-input');
+  if (!inp.value.trim()) return;
+  state.notes.unshift({ subj: 'Nova nota', title: inp.value, prev: '' });
+  inp.value = '';
+  renderNotes();
+  saveState();
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('day-grid');
+  grid.innerHTML = '';
+  const today = new Date().getDate();
+  for (let d = 1; d <= 31; d++) {
+    const c = document.createElement('div');
+    c.className = 'dc' + (state.days_done.includes(d) ? ' done' : d === today ? ' today' : '');
+    c.textContent = d;
+    grid.appendChild(c);
+  }
+}
+
+function showSec(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'simulado') { simAnswered = false; renderQuestao(); }
+}
+
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
+</script>
+</body>
+</html>
